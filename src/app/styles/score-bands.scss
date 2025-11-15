@@ -1,0 +1,49 @@
+$band-poor-bg: #ffebee;
+$band-poor-text: #c62828;
+
+$band-fair-bg: #fff8e1;
+$band-fair-text: #ef6c00;
+
+$band-good-bg: #e8f5e9;
+$band-good-text: #2e7d32;
+
+$band-excellent-bg: #e3f2fd;
+$band-excellent-text: #1565c0;
+
+.band-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+// Poor
+.band-poor {
+  @extend .band-pill;
+  background: $band-poor-bg;
+  color: $band-poor-text;
+}
+
+// Fair
+.band-fair {
+  @extend .band-pill;
+  background: $band-fair-bg;
+  color: $band-fair-text;
+}
+
+// Good
+.band-good {
+  @extend .band-pill;
+  background: $band-good-bg;
+  color: $band-good-text;
+}
+
+// Excellent
+.band-excellent {
+  @extend .band-pill;
+  background: $band-excellent-bg;
+  color: $band-excellent-text;
+}

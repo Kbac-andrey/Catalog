@@ -1,0 +1,86 @@
+<div class="catalog-list">
+  @if (state$ | async; as state) {
+    @if (state.loading) {
+      <app-loading message="Loading catalog items..." />
+    }
+
+    @if (state.error) {
+      <app-loading [message]="state.error" [isError]="true" />
+    }
+
+    @if (!state.loading && state.items !== null) {
+      <div class="header">
+        <app-search-box (search)="onSearch($event)" />
+      </div>
+      
+      <div class="content-wrapper">
+        <div class="main-content">
+          @if (state.searching) {
+            <app-loading message="Searching..." />
+          }
+
+          @if (!state.searching) {
+            @if (state.items.length > 0) {
+              <cdk-virtual-scroll-viewport itemSize="250" class="virtual-scroll-viewport">
+                <div class="items-grid">
+                  @for (item of state.items; track item.id) {
+                    <div class="item-card" [class.approved]="item.approved">
+                      <div class="item-header">
+                        <h2 class="item-title">
+                          <a [routerLink]="['/details', item.id]" class="item-link">{{ item.title }}</a>
+                        </h2>
+                        @if (item.approved) {
+                          <span class="approved-badge">Approved</span>
+                        }
+                      </div>
+
+                      <p class="item-description">{{ item.description }}</p>
+
+                      <div class="item-meta">
+                        <span class="category-badge">{{ item.category }}</span>
+                        <div class="tags">
+                          @for (tag of item.tags; track tag) {
+                            <span class="tag">{{ tag }}</span>
+                          }
+                        </div>
+                      </div>
+
+                      <div class="item-footer">
+                        <div class="score-info">
+                          <span class="score-label">Quality Score:</span>
+                          @if ((item | score | scoreBand); as band) {
+                            <span class="band-pill" [class]="band.cssClass">
+                              {{ band.name }} ({{ item | score }})
+                            </span>
+                          }
+                        </div>
+            
+                        <div class="item-actions-wrapper">
+                          @if (itemActionsTemplate) {
+                            <ng-container *ngTemplateOutlet="itemActionsTemplate; context: { $implicit: item }"></ng-container>
+                          }
+                          
+                          <a [routerLink]="['/details', item.id]" class="btn btn-secondary btn-view-details">
+                            View Details
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </cdk-virtual-scroll-viewport>
+            } @else {
+              <div class="empty-state">
+                <p>No items found matching your search.</p>
+              </div>
+            }
+          }
+        </div>
+
+        <aside class="filter-section">
+          <app-filter [items]="state.items" />
+        </aside>
+      </div>
+    }
+  }
+</div>

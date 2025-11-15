@@ -1,0 +1,8 @@
+<header class="header">
+  <nav class="nav">
+    <a routerLink="/" [class.active]="!isAdmin()">Public</a>
+    <a routerLink="/admin" [class.active]="isAdmin()">Admin</a>
+  </nav>
+</header>
+
+

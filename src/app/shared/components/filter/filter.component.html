@@ -1,0 +1,26 @@
+<form [formGroup]="filterForm" class="filter-card">
+  <h3 class="filter-title">Filters</h3>
+  
+  <div class="filter-group">
+    <label class="filter-label">Category</label>
+    <select class="filter-select" formControlName="category">
+      <option value="">All Categories</option>
+      @for (category of availableCategories; track category) {
+        <option [value]="category">{{ category }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-label">Sort</label>
+    <select class="filter-select" formControlName="sortBy">
+      <option value="">Default</option>
+      <option value="score-desc">Quality Score: High to Low</option>
+      <option value="score-asc">Quality Score: Low to High</option>
+    </select>
+  </div>
+
+  <button type="button" class="filter-reset-btn" (click)="resetFilters()">Reset Filters</button>
+</form>
+
+

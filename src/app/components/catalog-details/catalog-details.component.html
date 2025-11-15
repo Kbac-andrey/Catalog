@@ -1,0 +1,95 @@
+<div class="item-details-container">
+  @if (item$ | async; as state) {
+    @if (state.loading) {
+      <div class="loading">Loading item details...</div>
+    } @else if (state.error) {
+      <div class="error">
+        <p>{{ state.error }}</p>
+        <button type="button" class="btn btn-secondary" (click)="goBack()">
+          Go Back
+        </button>
+      </div>
+    } @else if (state.item) {
+      <div class="item-details">
+        <header class="details-header">
+          <div class="header-top">
+            <button type="button" class="back-btn" (click)="goBack()">
+              ← Back to List
+            </button>
+          </div>
+          <h1>{{ state.item.title }}</h1>
+          @if (state.item.approved) {
+            <span class="approved-badge">Approved</span>
+          }
+        </header>
+        <div class="details-content">
+          <section class="detail-section">
+            <h2>Description</h2>
+            <p>{{ state.item.description }}</p>
+          </section>
+          <section class="detail-section">
+            <h2>Category</h2>
+            <span class="category-badge">{{ state.item.category }}</span>
+          </section>
+          <section class="detail-section">
+            <h2>Tags</h2>
+            <div class="tags">
+              @for (tag of state.item.tags; track tag) {
+                <span class="tag">{{ tag }}</span>
+              }
+            </div>
+          </section>
+          <section class="detail-section">
+            <h2>Quality Score</h2>
+            <div class="score-display">
+              <div class="score-value-large">{{ getScore(state.item) }}</div>
+              <div class="score-band-large">({{ (getScore(state.item) | scoreBand).name }})</div>
+            </div>
+            <div class="score-breakdown">
+              <p>Score Calculation:</p>
+              <ul>
+                <li>Base score: 40</li>
+                <li [class.active]="state.item.title.length > 12">
+                  Title length > 12: {{ state.item.title.length > 12 ? '+20' : '+0' }}
+                </li>
+                <li [class.active]="state.item.description.length > 60">
+                  Description length > 60: {{ state.item.description.length > 60 ? '+15' : '+0' }}
+                </li>
+                <li [class.active]="!!state.item.category">
+                  Has category: {{ state.item.category ? '+10' : '+0' }}
+                </li>
+                <li [class.active]="state.item.tags.length >= 1">
+                  Has at least 1 tag: {{ state.item.tags.length >= 1 ? '+10' : '+0' }}
+                </li>
+                <li [class.active]="state.item.tags.length >= 2">
+                  Has at least 2 tags: {{ state.item.tags.length >= 2 ? '+5' : '+0' }}
+                </li>
+              </ul>
+            </div>
+          </section>
+          <section class="detail-section">
+            <h2>Metadata</h2>
+            <dl class="metadata-list">
+              <dt>Creator:</dt>
+              <dd>{{ state.item.creator }}</dd>
+              <dt>Created At:</dt>
+              <dd>{{ state.item.createdAt | date: 'medium' }}</dd>
+              <dt>Status:</dt>
+              <dd>{{ state.item.approved ? 'Approved' : 'Pending Approval' }}</dd>
+              @if (!state.item.approved) {
+                <dt>Approval Status:</dt>
+                <dd>
+                  @if (getScore(state.item) >= 75) {
+                    <span class="status-eligible">Eligible for approval</span>
+                  } @else {
+                    <span class="status-ineligible">Requires score ≥ 75 to approve</span>
+                  }
+                </dd>
+              }
+            </dl>
+          </section>
+        </div>
+      </div>
+    }
+  }
+</div>

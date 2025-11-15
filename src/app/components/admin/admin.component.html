@@ -1,0 +1,33 @@
+<app-catalog-list #catalogList>
+  <ng-template #itemActions let-item>
+    <div class="item-actions">
+      @if (!item.approved) {
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="!canApprove(item) || approvingId === item.id"
+          (click)="approveItem(item)"
+          [attr.aria-label]="'Approve ' + item.title"
+        >
+          @if (approvingId === item.id) {
+            Approving...
+          } @else {
+            Approve
+          }
+        </button>
+        @if (!canApprove(item)) {
+          <span class="hint">Requires score ≥ 75 to approve</span>
+        }
+      }
+      <button
+        type="button"
+        class="btn btn-edit"
+        (click)="editItem(item.id)"
+        [attr.aria-label]="'Edit ' + item.title"
+      >
+        Edit
+      </button>
+    </div>
+  </ng-template>
+</app-catalog-list>
+

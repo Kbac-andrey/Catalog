@@ -1,0 +1,164 @@
+<div class="edit-container">
+  @if (item$ | async; as state) {
+    @if (state.loading) {
+      <div class="loading">Loading item for editing...</div>
+    } @else if (state.error) {
+      <div class="error">
+        <p>{{ state.error }}</p>
+        <button type="button" class="btn btn-secondary" (click)="cancel()">
+          Go Back
+        </button>
+      </div>
+    } @else if (state.item && editForm) {
+      <div class="edit-card">
+        <header class="edit-header">
+          <button type="button" class="back-btn" (click)="cancel()">
+            ← Back to Admin list
+          </button>
+          <h1>Edit Item</h1>
+        </header>
+
+        <form [formGroup]="editForm" (ngSubmit)="save()" class="edit-form">
+          <div class="form-group">
+            <label for="title" class="form-label">Title *</label>
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              class="form-input"
+              [class.error]="editForm.get('title')?.invalid && editForm.get('title')?.touched"
+              placeholder="Enter title"
+            />
+            @if (editForm.get('title')?.invalid && editForm.get('title')?.touched) {
+              <span class="error-message">
+                @if (editForm.get('title')?.errors?.['required']) {
+                  Title is required
+                } @else if (editForm.get('title')?.errors?.['forbiddenCharacters']) {
+                  Title cannot contain &lt; &gt; {{ '{' }} {{ '}' }} [ ] characters
+                }
+              </span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Description *</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-textarea"
+              [class.error]="editForm.get('description')?.invalid && editForm.get('description')?.touched"
+              placeholder="Enter description"
+              rows="4"
+            ></textarea>
+            @if (editForm.get('description')?.invalid && editForm.get('description')?.touched) {
+              <span class="error-message">
+                @if (editForm.get('description')?.errors?.['required']) {
+                  Description is required
+                } @else if (editForm.get('description')?.errors?.['forbiddenCharacters']) {
+                  Description cannot contain &lt; &gt; {{ '{' }} {{ '}' }} [ ] characters
+                }
+              </span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="category" class="form-label">Category *</label>
+            <input
+              type="text"
+              id="category"
+              formControlName="category"
+              class="form-input"
+              [class.error]="editForm.get('category')?.invalid && editForm.get('category')?.touched"
+              placeholder="Enter category"
+            />
+            @if (editForm.get('category')?.invalid && editForm.get('category')?.touched) {
+              <span class="error-message">
+                @if (editForm.get('category')?.errors?.['required']) {
+                  Category is required
+                } @else if (editForm.get('category')?.errors?.['forbiddenCharacters']) {
+                  Category cannot contain &lt; &gt; {{ '{' }} {{ '}' }} [ ] characters
+                }
+              </span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tags</label>
+            <div class="tags-container">
+              <div class="tags-input-wrapper">
+                <button type="button" class="btn-add-tag" (click)="addTag()">
+                  + Add Tag
+                </button>
+              </div>
+              @if (tagsFormArray.controls.length > 0) {
+                <div class="tags-list">
+                  @for (tagControl of tagsFormArray.controls; track $index) {
+                    <div class="tag-input-group">
+                      <div class="tag-input-group-wrapper">
+                        <input
+                          type="text"
+                          [formControl]="tagControl"
+                          class="tag-input"
+                          [class.error]="tagControl.invalid && tagControl.touched"
+                          placeholder="Enter tag"
+                        />
+                        <button
+                          type="button"
+                          class="btn-remove-tag"
+                          (click)="removeTag($index)"
+                          [attr.aria-label]="'Remove tag ' + ($index + 1)"
+                        >
+                          ×
+                        </button>
+                      </div>
+                      @if (tagControl.invalid && tagControl.touched) {
+                        <span class="error-message tag-error">
+                          @if (tagControl.errors?.['required']) {
+                            Tag is required
+                          } @else if (tagControl.errors?.['duplicateTag']) {
+                            Duplicate tag
+                          }
+                        </span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              @if (tagsFormArray.length === 0) {
+                <p class="no-tags-hint">No tags added. Click "Add Tag" to add one.</p>
+              }
+            </div>
+          </div>
+
+          @if (saveError) {
+            <div class="save-error">
+              <p>{{ saveError }}</p>
+            </div>
+          }
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="cancel()"
+              [disabled]="saving"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="editForm.invalid || saving"
+            >
+              @if (saving) {
+                Saving...
+              } @else {
+                Save Changes
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+  }
+</div>
